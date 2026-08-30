@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique user ID" },
+        "email": { "type": "string", "description": "User email" },
+        "displayName": { "type": "string", "description": "Display name" },
+        "lastUsedSaveId": { "type": "string", "description": "ID of the last used save game" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "createdAt", "updatedAt"]
+    },
+    "SaveGame": {
+      "title": "SaveGame",
+      "description": "A saved game instance containing all career progress",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string", "description": "Name of the save" },
+        "lastPlayed": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "data": { "type": "object", "description": "The entire GameData state object" }
+      },
+      "required": ["id", "userId", "name", "lastPlayed", "createdAt", "data"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Top-level user document"
+    },
+    "/users/{userId}/saves/{saveId}": {
+      "schema": "SaveGame",
+      "description": "Sub-collection for user save games"
+    }
+  }
+}

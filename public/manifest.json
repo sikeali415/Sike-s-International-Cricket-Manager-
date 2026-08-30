@@ -1,0 +1,58 @@
+{
+  "name": "Cricket Manager 26 Beta",
+  "short_name": "CM26",
+  "description": "Cricket Manager 26 - Full Offline Cricket Management & Live Tactical Simulator for Chrome, Android & Desktop.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#090d16",
+  "theme_color": "#0d9488",
+  "orientation": "portrait",
+  "categories": ["sports", "games", "entertainment"],
+  "id": "com.sike.cricketmanager26",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://img.icons8.com/isometric/192/cricket.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://img.icons8.com/isometric/512/cricket.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Play Match",
+      "short_name": "Match",
+      "description": "Jump straight to your team's live match",
+      "url": "/?screen=LIVE_MATCH",
+      "icons": [{ "src": "/app-icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "4-Year Calendar",
+      "short_name": "Calendar",
+      "description": "Open international fixtures & world tour",
+      "url": "/?screen=CALENDAR",
+      "icons": [{ "src": "/app-icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Sike Share",
+      "short_name": "Social",
+      "description": "Open franchise social media feed",
+      "url": "/?screen=SIKE_SHARE",
+      "icons": [{ "src": "/app-icon.svg", "sizes": "192x192" }]
+    }
+  ]
+}

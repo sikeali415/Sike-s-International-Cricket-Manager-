@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Validation Blueprints ---
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'createdAt', 'updatedAt']) &&
+             data.keys().size() <= 6 &&
+             data.uid == request.auth.uid &&
+             data.createdAt == request.time &&
+             data.updatedAt == request.time &&
+             (data.get('email', '') is string) &&
+             (data.get('displayName', '') is string) &&
+             (data.get('lastUsedSaveId', '') is string);
+    }
+
+    function isValidSaveGame(data) {
+      return data.keys().hasAll(['id', 'userId', 'name', 'lastPlayed', 'createdAt', 'data']) &&
+             data.keys().size() == 6 &&
+             data.userId == request.auth.uid &&
+             data.id is string &&
+             data.name is string && data.name.size() <= 100 &&
+             data.lastPlayed is timestamp &&
+             data.createdAt == request.time &&
+             data.data is map;
+    }
+
+    // --- Collections ---
+
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isVerified() && isValidId(userId) && userId == request.auth.uid && isValidUser(incoming());
+      allow update: if isOwner(userId) && 
+                      incoming().uid == existing().uid &&
+                      incoming().createdAt == existing().createdAt &&
+                      incoming().updatedAt == request.time &&
+                      isValidUser(incoming()) &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'lastUsedSaveId', 'updatedAt', 'email']);
+
+      match /saves/{saveId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId);
+        allow create: if isVerified() && isValidId(saveId) && isValidSaveGame(incoming());
+        allow update: if isOwner(userId) &&
+                        incoming().id == existing().id &&
+                        incoming().userId == existing().userId &&
+                        incoming().createdAt == existing().createdAt &&
+                        incoming().lastPlayed == request.time &&
+                        isValidSaveGame(incoming()) &&
+                        incoming().diff(existing()).affectedKeys().hasOnly(['name', 'lastPlayed', 'data']);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

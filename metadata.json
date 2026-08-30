@@ -1,0 +1,6 @@
+{
+  "name": "Cricket manager 26 Beta",
+  "description": "Cricket Manager 26 - Full Offline Cricket Management & Live Tactical Simulator for Chrome, Android & Desktop.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
